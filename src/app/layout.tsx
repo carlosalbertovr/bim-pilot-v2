@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { Topbar } from "../components/layout/Topbar";
+import { Footer } from "../components/layout/Footer";
+import { ThemeProvider } from "../components/providers/ThemeProvider";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
 });
 
@@ -23,11 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistMono.variable} ${roboto.variable} antialiased`}>
+        <ThemeProvider>
+          <main className="font-sans grid grid-rows-[auto_1fr_auto] min-h-screen">
+            <Topbar />
+            <div>{children}</div>
+            <Footer />
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
