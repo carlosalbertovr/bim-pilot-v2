@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="h-12 py-2 px-8 flex flex-row items-center justify-between border-t">
+    <footer className="h-12 py-2 px-8 flex flex-row items-center justify-between border-t bg-background dark:bg-card">
       <p className="text-xs text-muted-foreground">
         © 2025 Carlos Velázquez. Personal project.
       </p>

@@ -3,7 +3,7 @@ import { ThemeSwitch } from "./ThemeSwitch";
 
 export function Topbar() {
   return (
-    <div className="h-12 py-2 px-8 flex flex-row items-center justify-between border-b">
+    <div className="h-12 py-2 px-8 flex flex-row items-center justify-between border-b bg-background dark:bg-card">
       <div className="flex flex-row items-center justify-center gap-2">
         <div className="flex justify-center items-center h-9 w-9 bg-brand-primary dark:bg-brand-primary-dark rounded-md">
           <Image

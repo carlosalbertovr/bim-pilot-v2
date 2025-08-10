@@ -4,6 +4,8 @@ import "./globals.css";
 import { Topbar } from "../components/layout/Topbar";
 import { Footer } from "../components/layout/Footer";
 import { ThemeProvider } from "../components/providers/ThemeProvider";
+import { Toaster } from "sonner";
+import { PhosphorIcon } from "../components/common/PhosphorIcon";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -29,6 +31,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistMono.variable} ${roboto.variable} antialiased`}>
         <ThemeProvider>
+          <Toaster
+            icons={{
+              success: <PhosphorIcon icon="CheckCircle" />,
+            }}
+            position="top-center"
+          />
           <main className="font-sans grid grid-rows-[auto_1fr_auto] min-h-screen">
             <Topbar />
             <div>{children}</div>

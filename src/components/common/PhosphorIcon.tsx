@@ -1,3 +1,5 @@
+"use client";
+
 import * as PhosphorIcons from "@phosphor-icons/react";
 import { ComponentType } from "react";
 import type { IconProps } from "@phosphor-icons/react";
@@ -5,14 +7,14 @@ import { IconName } from "../../types";
 
 type Props = Readonly<{
   icon: IconName;
-  customSize?: number;
-  customWeight?: IconProps["weight"];
+  size?: number;
+  weight?: IconProps["weight"];
 }>;
 
 const DEFAULT_SIZE = 18;
 const DEFAULT_WEIGHT = "duotone";
 
-export function PhosphorIcon({ icon, customSize, customWeight }: Props) {
+export function PhosphorIcon({ icon, size, weight }: Props) {
   const IconComponent = PhosphorIcons[icon] as ComponentType<IconProps>;
 
   if (!IconComponent) {
@@ -22,8 +24,8 @@ export function PhosphorIcon({ icon, customSize, customWeight }: Props) {
 
   return (
     <IconComponent
-      size={customSize || DEFAULT_SIZE}
-      weight={customWeight || DEFAULT_WEIGHT}
+      size={size || DEFAULT_SIZE}
+      weight={weight || DEFAULT_WEIGHT}
     />
   );
 }
