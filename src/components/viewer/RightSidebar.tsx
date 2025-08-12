@@ -49,8 +49,6 @@ export function RightSidebar() {
                 }
               ).value || "Unnamed Element";
 
-            console.log("elementName", elementName);
-
             return (
               <AccordionItem key={index} value={`element-${index}`}>
                 <AccordionTrigger className="rounded-none p-4 py-2 no-underline hover:no-underline hover:bg-secondary cursor-pointer">

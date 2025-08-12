@@ -1,5 +1,6 @@
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
+import { SpatialTreeItem } from "@thatopen/fragments";
 
 interface Props {
   components: OBC.Components;
@@ -8,9 +9,14 @@ interface Props {
     OBC.OrthoPerspectiveCamera,
     OBF.PostproductionRenderer
   >;
+  onUpdateSpatialData: (data: SpatialTreeItem) => void;
 }
 
-export async function initCoreSetup({ components, world }: Props) {
+export async function initCoreSetup({
+  components,
+  world,
+  onUpdateSpatialData,
+}: Props) {
   const githubUrl =
     "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
   const fetchedUrl = await fetch(githubUrl);
@@ -19,24 +25,24 @@ export async function initCoreSetup({ components, world }: Props) {
     type: "text/javascript",
   });
   const workerUrl = URL.createObjectURL(workerFile);
-  const fragments = components.get(OBC.FragmentsManager);
-  fragments.init(workerUrl);
+  const models = components.get(OBC.FragmentsManager);
+  models.init(workerUrl);
 
   world.camera.controls?.addEventListener("rest", () =>
-    fragments.core.update(true)
+    models.core.update(true)
   );
 
   world.onCameraChanged.add((camera) => {
-    for (const [, model] of fragments.list) {
+    for (const [, model] of models.list) {
       model.useCamera(camera.three);
     }
-    fragments.core.update(true);
+    models.core.update(true);
   });
 
-  fragments.list.onItemSet.add(({ value: model }) => {
+  models.list.onItemSet.add(({ value: model }) => {
     model.useCamera(world.camera.three);
     world.scene.three.add(model.object);
-    fragments.core.update(true);
+    models.core.update(true);
   });
 
   const fragPaths = [
@@ -48,11 +54,14 @@ export async function initCoreSetup({ components, world }: Props) {
       if (!modelId) return null;
       const file = await fetch(path);
       const buffer = await file.arrayBuffer();
-      return fragments.core.load(buffer, { modelId });
+      const fragmentsModel = await models.core.load(buffer, { modelId });
+
+      const spatialData = await fragmentsModel.getSpatialStructure();
+      onUpdateSpatialData(spatialData);
     })
   );
 
   return {
-    fragments,
+    models,
   };
 }

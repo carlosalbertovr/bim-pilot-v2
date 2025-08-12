@@ -1,0 +1,26 @@
+:root {
+  --border-color: var(--muted);
+}
+
+ul li {
+  position: relative;
+}
+
+.tree-border summary {
+  list-style: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.tree-border div {
+  position: relative;
+}
+
+.tree-border div::before {
+  position: absolute;
+  left: -11px;
+  top: 0px;
+  border-left: 1px solid var(--border-color);
+  content: "";
+  height: 100%;
+}

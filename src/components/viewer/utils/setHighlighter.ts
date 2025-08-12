@@ -5,23 +5,29 @@ import * as THREE from "three";
 
 interface Props {
   components: OBC.Components;
-  fragments: OBC.FragmentsManager;
+  models: OBC.FragmentsManager;
   world: OBC.SimpleWorld<
     OBC.SimpleScene,
     OBC.OrthoPerspectiveCamera,
     OBF.PostproductionRenderer
   >;
   onHighlight: (elements: ItemData[] | null) => void;
+  getPlansEnabled: () => boolean; // función para consultar el estado actual
 }
 
-export function setHighlighter({ components, fragments, world, onHighlight }: Props) {
+export function setHighlighter({
+  components,
+  models,
+  world,
+  onHighlight,
+  getPlansEnabled,
+}: Props) {
   components.get(OBC.Raycasters).get(world);
 
   const highlighter = components.get(OBF.Highlighter);
   highlighter.setup({
     world,
     selectMaterialDefinition: {
-      // you can change this to define the color of your highligthing
       color: new THREE.Color("#bcf124"),
       opacity: 1,
       transparent: false,
@@ -30,22 +36,26 @@ export function setHighlighter({ components, fragments, world, onHighlight }: Pr
   });
 
   highlighter.events.select.onHighlight.add(async (modelIdMap) => {
-    console.log("Something was selected");
+    // Bloquear selección si planesEnabled está activo
+    if (getPlansEnabled()) return;
+
+    console.log("xd")
 
     const promises = [];
     for (const [modelId, localIds] of Object.entries(modelIdMap)) {
-      const model = fragments.list.get(modelId);
+      const model = models.list.get(modelId);
       if (!model) continue;
       promises.push(model.getItemsData([...localIds]));
     }
 
     const selectedElements = (await Promise.all(promises)).flat();
-    console.log("selectedElements", selectedElements);
     onHighlight(selectedElements);
   });
 
-  highlighter.events.select.onClear.add(() => {
-    console.log("Selection was cleared");
-    onHighlight(null);
-  });
+  // highlighter.events.select.onClear.add(() => {
+  //   if (getPlansEnabled()) return;
+  //   onHighlight(null);
+  // });
+
+  return highlighter;
 }
