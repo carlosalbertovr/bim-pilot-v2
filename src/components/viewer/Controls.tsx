@@ -7,8 +7,14 @@ import { ViewerContext } from "./context/ViewerContext";
 import { LeftSidebar } from "./LeftSidebar";
 
 export function Controls() {
-  const { aperture, updateAperture, plansEnabled, updatePlansEnabled } =
-    useContext(ViewerContext);
+  const {
+    aperture,
+    updateAperture,
+    plansEnabled,
+    updatePlansEnabled,
+    measurerEnabled,
+    updateMeasurerEnabled,
+  } = useContext(ViewerContext);
 
   const [leftSidebarIsOpen, setLeftSidebarIsOpen] = useState<boolean>(false);
 
@@ -27,13 +33,6 @@ export function Controls() {
         <div className="mx-2 h-6 w-px bg-border self-center" />
         {/* Visualization tools */}
         <div className="flex flex-row gap-0">
-          <CustomButton
-            className="h-8 w-8 rounded-[0.25rem]"
-            variant="ghost"
-            tooltipLabel="Extend view"
-          >
-            <PhosphorIcon icon="ArrowsOut" />
-          </CustomButton>
           <CustomButton
             className="h-8 w-8 rounded-[0.25rem]"
             variant="ghost"
@@ -56,6 +55,7 @@ export function Controls() {
             tooltipLabel="Planes"
             onClick={function () {
               updatePlansEnabled(!plansEnabled);
+              updateMeasurerEnabled(false);
             }}
           >
             <PhosphorIcon icon="VectorThree" highlight={plansEnabled} />
@@ -71,8 +71,11 @@ export function Controls() {
             className="h-8 w-8 rounded-[0.25rem]"
             variant="ghost"
             tooltipLabel="Measure"
+            onClick={() => {
+              updateMeasurerEnabled(!measurerEnabled)
+            }}
           >
-            <PhosphorIcon icon="Ruler" />
+            <PhosphorIcon icon="Ruler" highlight={measurerEnabled} />
           </CustomButton>
         </div>
       </div>

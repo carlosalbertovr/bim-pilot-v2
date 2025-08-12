@@ -15,6 +15,7 @@ import { highlightMaterial } from "./styles/highlight";
 
 export function ModelViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const componentsRef = useRef<OBC.Components>(null);
   const worldRef = useRef<OBC.SimpleWorld<
     OBC.SimpleScene,
     OBC.OrthoPerspectiveCamera,
@@ -22,11 +23,15 @@ export function ModelViewer() {
   > | null>(null);
   const clipperRef = useRef<OBC.Clipper | null>(null);
   const highlighterRef = useRef<OBF.Highlighter | null>(null);
+  const measurerRef = useRef<OBF.LengthMeasurement | null>(null);
   const modelRef = useRef<OBC.FragmentsManager | null>(null);
 
   const zoomingRef = useRef(false);
 
   const [clippersCreated, setClippersCreated] = useState<OBC.SimplePlane[]>([]);
+  const [measuresCreated, setMeasuresCreated] = useState<number[]>([]);
+
+  console.log("measuresCreated", measuresCreated);
 
   const {
     updateSelectedElements,
@@ -37,6 +42,7 @@ export function ModelViewer() {
     treeSelection,
     aperture,
     plansEnabled,
+    measurerEnabled,
   } = useContext(ViewerContext);
 
   function onUpdateSpatialData(newSpatialData: SpatialTreeItem) {
@@ -61,12 +67,35 @@ export function ModelViewer() {
     setClippersCreated(Array.from(clipperRef.current.list.values()));
   }
 
+  function syncMeasures() {
+    if (!measurerRef.current) return;
+
+    const getAllValues = () => {
+      const lengths: number[] = [];
+      if (measurerRef.current) {
+        for (const line of measurerRef.current.list) {
+          lengths.push(line.value);
+        }
+      }
+      return lengths;
+    };
+
+    setMeasuresCreated(getAllValues());
+  }
+
   function onClippersDelete() {
     if (!clipperRef.current || !worldRef.current) return;
     for (const [id] of clipperRef.current.list) {
       clipperRef.current.delete(worldRef.current, id);
     }
     syncClippers();
+  }
+
+  function onMeasuresDelete() {
+    if (!measurerRef.current) return;
+
+    measurerRef.current.list.clear();
+    syncMeasures();
   }
 
   async function zoomToSelection(modelIdMap: OBC.ModelIdMap) {
@@ -129,6 +158,7 @@ export function ModelViewer() {
       if (typeof window === "undefined" || !containerRef.current) return;
 
       components = new OBC.Components();
+      componentsRef.current = components;
       const worlds = components.get(OBC.Worlds);
 
       const world = worlds.create<
@@ -220,6 +250,8 @@ export function ModelViewer() {
     if (!clipperRef.current || !containerRef.current || !highlighterRef.current)
       return;
 
+    onMeasuresDelete();
+
     highlighterRef.current.enabled = !plansEnabled;
 
     clipperRef.current.enabled = plansEnabled;
@@ -239,7 +271,36 @@ export function ModelViewer() {
         syncClippers();
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plansEnabled]);
+
+  useEffect(() => {
+    if (
+      !containerRef.current ||
+      !componentsRef.current ||
+      !highlighterRef.current ||
+      !worldRef.current
+    )
+      return;
+    highlighterRef.current.enabled = !measurerEnabled;
+
+    if (!measurerRef.current) {
+      const measurer = componentsRef.current.get(OBF.LengthMeasurement);
+      measurerRef.current = measurer;
+      measurerRef.current.world = worldRef.current;
+      measurerRef.current.color = new THREE.Color("#494cb6");
+      measurerRef.current.enabled = true;
+
+      containerRef.current.ondblclick = () => {
+        measurer.create();
+        syncMeasures();
+      };
+    }
+
+    if (measurerRef.current) {
+      measurerRef.current.enabled = measurerEnabled;
+    }
+  }, [measurerEnabled]);
 
   useEffect(
     function () {
@@ -267,6 +328,12 @@ export function ModelViewer() {
           message="Double-click to create a clipping plane."
         />
       )}
+      {measurerEnabled && (
+        <ActionTip
+          icon="CursorClick"
+          message="Double-click to create a measurement."
+        />
+      )}
       {clippersCreated.length > 0 && (
         <ActionTip
           message={`There are ${clippersCreated.length} planes created.`}
@@ -274,6 +341,17 @@ export function ModelViewer() {
           actionButton={{
             label: "Delete",
             onClick: onClippersDelete,
+            icon: "Trash",
+          }}
+        />
+      )}
+      {measuresCreated.length > 0 && (
+        <ActionTip
+          message={`There are ${measuresCreated.length} measurements created.`}
+          placement="bottom"
+          actionButton={{
+            label: "Delete",
+            onClick: onMeasuresDelete,
             icon: "Trash",
           }}
         />

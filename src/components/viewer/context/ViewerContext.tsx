@@ -15,6 +15,8 @@ export interface IViewerContext {
   updateAperture: (aperture: "perspective" | "orthographic") => void;
   plansEnabled: boolean;
   updatePlansEnabled: (enable: boolean) => void;
+  measurerEnabled: boolean;
+  updateMeasurerEnabled: (enable: boolean) => void;
 }
 
 export const ViewerContext = createContext<IViewerContext>({
@@ -28,6 +30,8 @@ export const ViewerContext = createContext<IViewerContext>({
   updateAperture: () => {},
   plansEnabled: false,
   updatePlansEnabled: () => {},
+  measurerEnabled: false,
+  updateMeasurerEnabled: () => {},
 });
 
 type ViewerContextProviderProps = {
@@ -47,6 +51,7 @@ export function ViewerContextProvider({
     "perspective"
   );
   const [plansEnabled, setPlansEnabled] = useState(false);
+  const [measurerEnabled, setMeasurerEnabled] = useState(false);
 
   const updateSpatialData = useCallback((data: TreeItem[] | null) => {
     setSpatialData(data);
@@ -71,6 +76,10 @@ export function ViewerContextProvider({
     setPlansEnabled(enable);
   }, []);
 
+  const updateMeasurerEnabled = useCallback((enable: boolean) => {
+    setMeasurerEnabled(enable);
+  }, []);
+
   return (
     <ViewerContext.Provider
       value={{
@@ -84,6 +93,8 @@ export function ViewerContextProvider({
         updateAperture,
         plansEnabled,
         updatePlansEnabled,
+        measurerEnabled,
+        updateMeasurerEnabled,
       }}
     >
       {children}

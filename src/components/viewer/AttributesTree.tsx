@@ -124,7 +124,7 @@ export function AttributesTree(props: AttributeTreeProps) {
               ])}
             >
               <PhosphorIcon size={12} icon="Cube" />
-              <p className={cn(["text-xs dark:text-white"])}>{item.label}</p>
+              <p className={cn(["text-xs text-foreground"])}>{item.label}</p>
             </div>
           </li>
         );
