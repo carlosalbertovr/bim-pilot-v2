@@ -14,7 +14,7 @@ export function LeftSidebar({ isOpen, onClose }: Props) {
 
   if (isOpen) {
     return (
-      <div className="w-[28rem] border absolute left-2 top-2 bottom-2 bg-background dark:bg-card rounded-md shadow-md overflow-y-hidden pb-10 dark:shadow-none z-2">
+      <div className="w-full sm:w-[28rem] border absolute left-0 sm:left-2 top-2 bottom-2 bg-background dark:bg-card rounded-md shadow-md overflow-y-hidden pb-10 dark:shadow-none z-2">
         <div className="flex justify-between items-center py-2 px-4 border-b">
           <h2 className="text-xs font-semibold">Model tree</h2>
           <CustomButton variant="ghost" className=" h-6 w-6" onClick={onClose}>

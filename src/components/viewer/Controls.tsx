@@ -20,7 +20,7 @@ export function Controls() {
 
   return (
     <>
-      <div className="absolute top-16 sm:bottom-4 sm:top-auto left-1/2 -translate-x-1/2 flex flex-row border bg-background dark:bg-card rounded-[0.5rem] shadow-md dark:shadow-none p-[0.25rem]">
+      <div className="absolute bottom-8 sm:bottom-4 sm:top-auto left-1/2 -translate-x-1/2 flex flex-row border bg-background dark:bg-card rounded-[0.5rem] shadow-md dark:shadow-none p-[0.25rem]">
         <CustomButton
           className="h-8 w-8 rounded-[0.25rem]"
           variant="ghost"
@@ -55,7 +55,9 @@ export function Controls() {
             tooltipLabel="Planes"
             onClick={function () {
               updatePlansEnabled(!plansEnabled);
-              updateMeasurerEnabled(false);
+              if (!plansEnabled) {
+                updateMeasurerEnabled(false);
+              }
             }}
           >
             <PhosphorIcon icon="VectorThree" highlight={plansEnabled} />
@@ -72,7 +74,10 @@ export function Controls() {
             variant="ghost"
             tooltipLabel="Measure"
             onClick={() => {
-              updateMeasurerEnabled(!measurerEnabled)
+              updateMeasurerEnabled(!measurerEnabled);
+              if (!measurerEnabled) {
+                updatePlansEnabled(false);
+              }
             }}
           >
             <PhosphorIcon icon="Ruler" highlight={measurerEnabled} />

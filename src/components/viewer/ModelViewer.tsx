@@ -31,8 +31,6 @@ export function ModelViewer() {
   const [clippersCreated, setClippersCreated] = useState<OBC.SimplePlane[]>([]);
   const [measuresCreated, setMeasuresCreated] = useState<number[]>([]);
 
-  console.log("measuresCreated", measuresCreated);
-
   const {
     updateSelectedElements,
     updateTreeSelection,
@@ -271,7 +269,7 @@ export function ModelViewer() {
         syncClippers();
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plansEnabled]);
 
   useEffect(() => {
@@ -356,7 +354,9 @@ export function ModelViewer() {
           }}
         />
       )}
-      <div id="container" ref={containerRef} className="h-full" />
+      <div className="w-screen h-full">
+        <div id="container" ref={containerRef} className="h-full" />
+      </div>
     </div>
   );
 }

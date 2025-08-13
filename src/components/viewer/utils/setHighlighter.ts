@@ -39,8 +39,6 @@ export function setHighlighter({
     // Bloquear selección si planesEnabled está activo
     if (getPlansEnabled()) return;
 
-    console.log("xd")
-
     const promises = [];
     for (const [modelId, localIds] of Object.entries(modelIdMap)) {
       const model = models.list.get(modelId);

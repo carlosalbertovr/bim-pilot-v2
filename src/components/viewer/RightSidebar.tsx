@@ -23,7 +23,7 @@ export function RightSidebar() {
 
   if (selectedElements) {
     return (
-      <div className="w-64 border absolute right-2 top-2 bottom-2 bg-background dark:bg-card rounded-md shadow-md dark:shadow-none z-2">
+      <div className="w-full sm:w-64 border absolute sm:right-2 top:20 sm:top-2 bottom-2 bg-background dark:bg-card rounded-md shadow-md dark:shadow-none z-2">
         <div className="flex justify-between items-center py-2 px-4 border-b">
           <h2 className="text-xs font-semibold">Selection</h2>
           <CustomButton
